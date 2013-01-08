@@ -99,7 +99,20 @@ class ImapLibrary(object):
         `mailNumber` is the index number of the mail to open
         """
         body = self.imap.fetch(mailNumber, '(BODY[TEXT])')[1][0][1].decode('quoted-printable')
+        body = body.decode('utf-8')
         return body
+
+    def get_email_title(self, mailNumber):
+        """
+        Returns an email title
+
+        `mailNumber` is the index number of the mail to open
+        """
+        subject = self.imap.fetch(mailNumber, '(BODY[HEADER.FIELDS (SUBJECT)])')[1][0][1].lstrip('Subject: ').strip() + ' '
+        subject, encoding = email.Header.decode_header(subject)[0]
+        print subject
+        title = subject.decode(encoding)
+        return title
     
     def remove_all_mails(self)
         """
