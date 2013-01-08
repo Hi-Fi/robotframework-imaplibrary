@@ -15,7 +15,7 @@ class ImapLibrary(object):
     ROBOT_LIBRARY_VERSION = VERSION
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
 
-    port = 993
+    port = 143
 
     def open_mailbox(self, server, user, password):
         """
@@ -100,6 +100,15 @@ class ImapLibrary(object):
         """
         body = self.imap.fetch(mailNumber, '(BODY[TEXT])')[1][0][1].decode('quoted-printable')
         return body
+    
+    def remove_all_mails(self)
+        """
+        Marks all received mails as deleted and removes those
+        """
+        
+        for mail in self.mails:
+            self.imap.store(mail,'+FLAGS', '\DELETED')
+        self.imap.expunge()
 
     def _criteria(self, fromEmail, toEmail, status):
         crit = []
