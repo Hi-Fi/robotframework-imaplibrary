@@ -15,14 +15,16 @@ class ImapLibrary(object):
     ROBOT_LIBRARY_VERSION = VERSION
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
 
-    port = 143
-
-    def open_mailbox(self, server, user, password):
+    def open_mailbox(self, server, user, password, port=993, secured=True):
         """
         Open the mailbox on a mail server with a valid
         authentication.
         """
-        self.imap = imaplib.IMAP4_SSL(server, self.port)
+        port = int(port)
+        if secured:
+            self.imap = imaplib.IMAP4_SSL(server, port)
+        else:
+            self.imap = imaplib.IMAP4(server, port)
         self.imap.login(user, password)
         self.imap.select()
 
@@ -110,7 +112,6 @@ class ImapLibrary(object):
         """
         subject = self.imap.fetch(mailNumber, '(BODY[HEADER.FIELDS (SUBJECT)])')[1][0][1].lstrip('Subject: ').strip() + ' '
         subject, encoding = email.Header.decode_header(subject)[0]
-        print subject
         title = subject.decode(encoding)
         return title
     
